@@ -37,11 +37,11 @@ namespace BetterFragments
 						return;
 					case 7:
 						fragName = "Grey Huntsmen Fragment";
-						fragDesc = "No effect";
+						fragDesc = "20% Player Health Boost\n10% turret damage";
 						return;
 					case 8:
 						fragName = "Warger's Fragment";
-						fragDesc = "No effect";
+						fragDesc = "15% More weight capacity\n20% Speed boost";
 						return;
 					case 9:
 						fragName = "Cursed Fragment";
@@ -75,6 +75,10 @@ namespace BetterFragments
 				{
 					__instance.HullArmor *= 1.2f;
 				}
+				if (__instance.Ship.GetIsPlayerShip() && PLServer.Instance != null && PLServer.Instance.IsFragmentCollected(7))
+				{
+					__instance.TurretDamageFactor *= 1.1f;
+				}
 			}
 		}
 
@@ -86,6 +90,98 @@ namespace BetterFragments
 				if(__instance.MyStats != null && __instance.MyHull.Current <= 0f && !__instance.GetIsPlayerShip() && PLServer.Instance != null && PLServer.Instance.IsFragmentCollected(0)) 
 				{
 					__instance.CreditsLeftBehind = (int)(__instance.CreditsLeftBehind * 1.15f);
+				}
+			}
+		}
+
+		[HarmonyPatch(typeof(PLPawn),"Update")]
+		class HealthBoost 
+		{
+			static void Postfix(PLPawn __instance) 
+			{
+				if(__instance.GetPlayer() != null) 
+				{
+					float num10 = 100f;
+					if (__instance.GetPlayer().RaceID == 2)
+					{
+						num10 = 60f;
+					}
+					float num11 = num10 + (float)__instance.GetPlayer().Talents[0] * 20f;
+					num11 += (float)__instance.GetPlayer().Talents[57] * 20f;
+					foreach (PawnStatusEffect pawnStatusEffect5 in __instance.MyStatusEffects)
+					{
+						if (pawnStatusEffect5 != null && pawnStatusEffect5.Type == EPawnStatusEffectType.HEALTH_REGEN)
+						{
+							num11 += 20f;
+						}
+					}
+					float value2 = num11;
+					if (__instance.GetPlayer().GetClassID() != -1 && __instance.GetPlayer().GetClassID() < 5 && __instance.GetPlayer().TeamID == 0)
+					{
+						PLServerClassInfo plserverClassInfo = PLServer.Instance.ClassInfos[__instance.GetPlayer().GetClassID()];
+						num11 += (float)plserverClassInfo.SurvivalBonusCounter * 5f;
+					}
+					if(PLServer.Instance != null && PLServer.Instance.IsFragmentCollected(7) && __instance.GetPlayer().TeamID == 0) 
+					{
+						num11 *= 1.2f;
+					}
+					if (__instance.MaxHealth != num11)
+					{
+						__instance.Health = __instance.Health / __instance.MaxHealth * num11;
+						__instance.MaxHealth = num11;
+						__instance.MaxHealth_Normal = value2;
+					}
+				}
+			}
+		}
+		[HarmonyPatch(typeof(PLPlayer),"Update")]
+		class PlayerBoost 
+		{
+			static void Postfix(PLPlayer __instance) 
+			{
+				float num3 = 10f;
+				if (__instance.RaceID == 1)
+				{
+					num3 = 20f;
+				}
+				else if (__instance.RaceID == 2)
+				{
+					num3 = 30f;
+				}
+				if (__instance.MyInventory != null)
+				{
+					__instance.MyInventory.WeightCapacity = num3 + (float)__instance.Talents[26] * 10f;
+					if(PLServer.Instance != null && PLServer.Instance.IsFragmentCollected(8) && __instance.TeamID == 0) 
+					{
+						__instance.MyInventory.WeightCapacity *= 1.15f;
+					}
+				}
+			}
+		}
+		[HarmonyPatch(typeof(PLController),"Update")]
+		class SpeedBoost 
+		{
+			static void Postfix(PLController __instance) 
+			{
+				if (PLServer.Instance != null && __instance.MyPawn.MyPlayer != null)
+				{
+					PLPlayer cachedFriendlyPlayerOfClass = PLServer.Instance.GetCachedFriendlyPlayerOfClass(0, __instance.MyPawn.MyPlayer.StartingShip);
+					if (__instance.MyPawn.GetPlayer() != null && cachedFriendlyPlayerOfClass != null)
+					{
+						__instance.PawnSpeedModifier = 0.9f + (float)cachedFriendlyPlayerOfClass.Talents[5] * 0.06f;
+					}
+					else
+					{
+						__instance.PawnSpeedModifier = 0.9f;
+					}
+				}
+				else
+				{
+					__instance.PawnSpeedModifier = 0.9f;
+				}
+				if(PLServer.Instance != null && PLServer.Instance.IsFragmentCollected(8)) 
+				{
+					__instance.PawnSpeedModifier *= 1.20f;
 				}
 			}
 		}
