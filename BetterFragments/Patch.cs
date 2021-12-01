@@ -1,5 +1,5 @@
 ﻿using HarmonyLib;
-
+using UnityEngine;
 namespace BetterFragments
 {
     internal class Patch
@@ -182,6 +182,22 @@ namespace BetterFragments
 				if(PLServer.Instance != null && PLServer.Instance.IsFragmentCollected(8)) 
 				{
 					__instance.PawnSpeedModifier *= 1.20f;
+				}
+			}
+		}
+		[HarmonyPatch(typeof(PLServer), "AddToShipLog")]
+		class MoreMoney 
+		{
+			static void Postfix(string msg) 
+			{
+				if(msg == "+50 Cr due to High Roller Fragment") 
+				{
+					PLServer.Instance.AddToShipLog("FRG", $"+{PLServer.Instance.CurrentCrewCredits / 20} Cr due to High Roller Fragment", Color.white, true, null, null, -1, 0);
+					if (PLNetworkManager.Instance.LocalPlayer != null && PLNetworkManager.Instance.LocalPlayer.GetClassID() == 0)
+					{
+						PLServer.Instance.AddNotification($"+{PLServer.Instance.CurrentCrewCredits / 20} Cr due to High Roller Fragment", -1, PLServer.Instance.GetEstimatedServerMs() + 6000, false);
+					}
+					PLServer.Instance.CurrentCrewCredits += PLServer.Instance.CurrentCrewCredits / 20;
 				}
 			}
 		}
