@@ -41,7 +41,7 @@ namespace BetterFragments
 						return;
 					case 8:
 						fragName = "Warger's Fragment";
-						fragDesc = "15% More weight capacity\n20% Speed boost";
+						fragDesc = "+10 Weight capacity\n20% Speed boost";
 						return;
 					case 9:
 						fragName = "Cursed Fragment";
@@ -153,7 +153,7 @@ namespace BetterFragments
 					__instance.MyInventory.WeightCapacity = num3 + (float)__instance.Talents[26] * 10f;
 					if(PLServer.Instance != null && PLServer.Instance.IsFragmentCollected(8) && __instance.TeamID == 0) 
 					{
-						__instance.MyInventory.WeightCapacity *= 1.15f;
+						__instance.MyInventory.WeightCapacity += 10;
 					}
 				}
 			}
