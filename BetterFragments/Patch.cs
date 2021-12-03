@@ -87,7 +87,7 @@ namespace BetterFragments
 		{
 			static void Prefix(PLShipInfoBase __instance) 
 			{
-				if(__instance.MyStats != null && __instance.MyHull.Current <= 0f && !__instance.GetIsPlayerShip() && PLServer.Instance != null && PLServer.Instance.IsFragmentCollected(0)) 
+				if(__instance.MyStats != null && __instance.MyHull != null && __instance.MyHull.Current <= 0f && !__instance.GetIsPlayerShip() && PLServer.Instance != null && PLServer.Instance.IsFragmentCollected(0)) 
 				{
 					__instance.CreditsLeftBehind = (int)(__instance.CreditsLeftBehind * 1.15f);
 				}
