@@ -192,12 +192,12 @@ namespace BetterFragments
 			{
 				if(msg == "+50 Cr due to High Roller Fragment") 
 				{
-					PLServer.Instance.AddToShipLog("FRG", $"+{PLServer.Instance.CurrentCrewCredits / 20} Cr due to High Roller Fragment", Color.white, true, null, null, -1, 0);
+					PLServer.Instance.AddToShipLog("FRG", $"+{(int)(PLServer.Instance.CurrentCrewCredits * 0.05)} Cr due to High Roller Fragment", Color.white, true, null, null, -1, 0);
 					if (PLNetworkManager.Instance.LocalPlayer != null && PLNetworkManager.Instance.LocalPlayer.GetClassID() == 0)
 					{
-						PLServer.Instance.AddNotification($"+{PLServer.Instance.CurrentCrewCredits / 20} Cr due to High Roller Fragment", -1, PLServer.Instance.GetEstimatedServerMs() + 6000, false);
+						PLServer.Instance.AddNotification($"+{(int)(PLServer.Instance.CurrentCrewCredits * 0.05)} Cr due to High Roller Fragment", -1, PLServer.Instance.GetEstimatedServerMs() + 6000, false);
 					}
-					PLServer.Instance.CurrentCrewCredits += PLServer.Instance.CurrentCrewCredits / 20;
+					PLServer.Instance.CurrentCrewCredits += (int)(PLServer.Instance.CurrentCrewCredits * 0.05);
 				}
 			}
 		}
