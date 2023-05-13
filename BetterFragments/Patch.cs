@@ -9,7 +9,7 @@ namespace BetterFragments
         {
             static void Postfix(int fragID, out string fragName, out string fragDesc) 
             {
-				switch (fragID)
+                switch (fragID)
 				{
 					case 0:
 						fragName = "A.O.G. Fragment";
@@ -71,6 +71,7 @@ namespace BetterFragments
 		{
 			static void Postfix(PLShipStats __instance) 
 			{
+                if (!Mod.MasterHasMod) return;
                 if (__instance.Ship.GetIsPlayerShip() && PLServer.Instance != null && PLServer.Instance.IsFragmentCollected(13)) 
 				{
 					__instance.HullArmor *= 1.2f;
@@ -87,7 +88,8 @@ namespace BetterFragments
 		{
 			static void Prefix(PLShipInfoBase __instance) 
 			{
-				if(__instance.MyStats != null && __instance.MyHull != null && __instance.MyHull.Current <= 0f && !__instance.GetIsPlayerShip() && PLServer.Instance != null && PLServer.Instance.IsFragmentCollected(0)) 
+                if (!Mod.MasterHasMod) return;
+                if (__instance.MyStats != null && __instance.MyHull != null && __instance.MyHull.Current <= 0f && !__instance.GetIsPlayerShip() && PLServer.Instance != null && PLServer.Instance.IsFragmentCollected(0)) 
 				{
 					__instance.CreditsLeftBehind = (int)(__instance.CreditsLeftBehind * 1.15f);
 				}
@@ -99,7 +101,8 @@ namespace BetterFragments
 		{
 			static void Postfix(PLPawn __instance) 
 			{
-				if(__instance.GetPlayer() != null) 
+                if (!Mod.MasterHasMod) return;
+                if (__instance.GetPlayer() != null) 
 				{
 					float num10 = 100f;
 					if (__instance.GetPlayer().RaceID == 2)
@@ -139,6 +142,7 @@ namespace BetterFragments
 		{
 			static void Postfix(PLPlayer __instance) 
 			{
+				if (!Mod.MasterHasMod) return;
 				float num3 = 10f;
 				if (__instance.RaceID == 1)
 				{
@@ -163,7 +167,8 @@ namespace BetterFragments
 		{
 			static void Postfix(PLController __instance) 
 			{
-				if (PLServer.Instance != null && __instance.MyPawn.MyPlayer != null)
+                if (!Mod.MasterHasMod) return;
+                if (PLServer.Instance != null && __instance.MyPawn.MyPlayer != null)
 				{
 					PLPlayer cachedFriendlyPlayerOfClass = PLServer.Instance.GetCachedFriendlyPlayerOfClass(0, __instance.MyPawn.MyPlayer.StartingShip);
 					if (__instance.MyPawn.GetPlayer() != null && cachedFriendlyPlayerOfClass != null)
@@ -190,7 +195,8 @@ namespace BetterFragments
 		{
 			static void Postfix(string msg) 
 			{
-				if(msg == "+50 Cr due to High Roller Fragment") 
+                if (!Mod.MasterHasMod) return;
+                if (msg == "+50 Cr due to High Roller Fragment") 
 				{
 					PLServer.Instance.AddToShipLog("FRG", $"+{(int)(PLServer.Instance.CurrentCrewCredits * 0.05)} Cr due to High Roller Fragment", Color.white, true, null, null, -1, 0);
 					if (PLNetworkManager.Instance.LocalPlayer != null && PLNetworkManager.Instance.LocalPlayer.GetClassID() == 0)
