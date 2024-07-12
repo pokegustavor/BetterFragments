@@ -6,7 +6,7 @@ namespace BetterFragments
     public class Mod : PulsarMod
     {
         public static bool MasterHasMod = false;
-        public override string Version => "1.1";
+        public override string Version => "1.2";
 
         public override string Author => "pokegustavo";
 
@@ -32,6 +32,17 @@ namespace BetterFragments
             else
             {
                 Mod.MasterHasMod = true;
+            }
+        }
+    }
+
+    class ReciveConfirmation : ModMessage
+    {
+        public override void HandleRPC(object[] arguments, PhotonMessageInfo sender)
+        {
+            if (PhotonNetwork.masterClient == sender.sender)
+            {
+                Mod.MasterHasMod = (bool)arguments[0];
             }
         }
     }

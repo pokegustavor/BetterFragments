@@ -1,4 +1,5 @@
 ﻿using HarmonyLib;
+using PulsarModLoader;
 using UnityEngine;
 namespace BetterFragments
 {
@@ -130,6 +131,7 @@ namespace BetterFragments
 		[HarmonyPatch(typeof(PLShipStats), "CalculateStats")]
 		class ShipBuffs 
 		{
+			static float lastUpdate = 0;
 			static void Postfix(PLShipStats __instance) 
 			{
                 if (!Mod.MasterHasMod) return;
@@ -141,6 +143,15 @@ namespace BetterFragments
 				{
 					__instance.TurretDamageFactor *= 1.1f;
 				}
+
+				if(PhotonNetwork.isMasterClient && Time.time -  lastUpdate > 5) 
+				{
+					lastUpdate = Time.time;
+                    ModMessage.SendRPC("pokegustavo.betterfragments", "BetterFragments.ReciveConfirmation", PhotonTargets.Others, new object[]
+					{
+                    Mod.MasterHasMod
+					});
+                }
 			}
 		}
 
